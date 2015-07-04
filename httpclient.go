@@ -1,6 +1,9 @@
 package jpushclient
 
 import (
+	"bytes"
+	"io/ioutil"
+	"net/http"
 	"time"
 )
 
@@ -38,4 +41,31 @@ func SendPostBytes(url string, content []byte, authCode string) (string, error) 
 	req.Body(content)
 
 	return req.String()
+}
+
+func SendPostBytes2(url string, data []byte, authCode string) (string, error) {
+
+	client := &http.Client{}
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(data))
+	req.Header.Add("Charset", CHARSET)
+	req.Header.Add("Authorization", authCode)
+	req.Header.Add("Content-Type", CONTENT_TYPE_JSON)
+	resp, err := client.Do(req)
+
+	if err != nil {
+		if resp != nil {
+			resp.Body.Close()
+		}
+		return "", err
+	}
+	if resp == nil {
+		return "", nil
+	}
+
+	defer resp.Body.Close()
+	r, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return "", err
+	}
+	return string(r), nil
 }

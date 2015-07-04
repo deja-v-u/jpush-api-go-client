@@ -2,7 +2,6 @@ package jpushclient
 
 import (
 	"encoding/base64"
-	"encoding/json"
 	"errors"
 	"strings"
 )
@@ -29,13 +28,8 @@ func NewPushClient(secret, appKey string) *PushClient {
 	return pusher
 }
 
-func (this *PushClient) Send(builder interface{}) (string, error) {
-	content, err := json.Marshal(builder)
-	if err != nil {
-		return "", err
-	}
-
-	return this.SendPushBytes(content)
+func (this *PushClient) Send(data []byte) (string, error) {
+	return this.SendPushBytes(data)
 }
 
 func (this *PushClient) SendPushString(content string) (string, error) {
@@ -51,7 +45,8 @@ func (this *PushClient) SendPushString(content string) (string, error) {
 }
 
 func (this *PushClient) SendPushBytes(content []byte) (string, error) {
-	ret, err := SendPostBytes(this.BaseUrl, content, this.AuthCode)
+	//ret, err := SendPostBytes(this.BaseUrl, content, this.AuthCode)
+	ret, err := SendPostBytes2(this.BaseUrl, content, this.AuthCode)
 	if err != nil {
 		return ret, err
 	}
