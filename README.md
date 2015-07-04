@@ -72,8 +72,8 @@ jpush-api-go-client
 	)
 
 	const (
-		appKey = "fc4e7512bfd31c3dba9bad3e"
-		secret = "570d3442dc88d1382fe93b89"
+		appKey = "you jpush appkey"
+		secret = "you jpush secret"
 	)
 
 	func main() {
