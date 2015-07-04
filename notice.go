@@ -8,26 +8,26 @@ type Notice struct {
 }
 
 type AndroidNotice struct {
-	Alert     string            `json:"alert"`
-	Title     string            `json:"title,omitempty"`
-	BuilderId int               `json:"builder_id,omitempty"`
-	Extras    map[string]string `json:"extras,omitempty"`
+	Alert     string                 `json:"alert"`
+	Title     string                 `json:"title,omitempty"`
+	BuilderId int                    `json:"builder_id,omitempty"`
+	Extras    map[string]interface{} `json:"extras,omitempty"`
 }
 
 type IOSNotice struct {
-	Alert            string            `json:"alert"`
-	Sound            string            `json:"sound,omitempty"`
-	Badge            int               `json:"badge,omitempty"`
-	ContentAvailable bool              `json:"Content-available,omitempty"`
-	Category         string            `json:"category,omitempty"`
-	Extras           map[string]string `json:"extras,omitempty"`
+	Alert            string                 `json:"alert"`
+	Sound            string                 `json:"sound,omitempty"`
+	Badge            int                    `json:"badge,omitempty"`
+	ContentAvailable bool                   `json:"Content-available,omitempty"`
+	Category         string                 `json:"category,omitempty"`
+	Extras           map[string]interface{} `json:"extras,omitempty"`
 }
 
 type WinPhoneNotice struct {
-	Alert    string            `json:"alert"`
-	Title    string            `json:"title,omitempty"`
-	OpenPage string            `json:"_open_page,omitempty"`
-	Extras   map[string]string `json:"extras,omitempty"`
+	Alert    string                 `json:"alert"`
+	Title    string                 `json:"title,omitempty"`
+	OpenPage string                 `json:"_open_page,omitempty"`
+	Extras   map[string]interface{} `json:"extras,omitempty"`
 }
 
 func (this *Notice) SetAlert(alert string) {

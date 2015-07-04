@@ -1,10 +1,10 @@
 package jpushclient
 
 type Message struct {
-	Content     string            `json:"msg_content"`
-	Title       string            `json:"title,omitempty"`
-	ContentType string            `json:"content_type,omitempty"`
-	Extras      map[string]string `json:"extras,omitempty"`
+	Content     string                 `json:"msg_content"`
+	Title       string                 `json:"title,omitempty"`
+	ContentType string                 `json:"content_type,omitempty"`
+	Extras      map[string]interface{} `json:"extras,omitempty"`
 }
 
 func (this *Message) SetContent(c string) {
@@ -20,9 +20,9 @@ func (this *Message) SetContentType(t string) {
 	this.ContentType = t
 }
 
-func (this *Message) AddExtras(key, value string) {
+func (this *Message) AddExtras(key string, value interface{}) {
 	if this.Extras == nil {
-		this.Extras = make(map[string]string)
+		this.Extras = make(map[string]interface{})
 	}
 	this.Extras[key] = value
 }
