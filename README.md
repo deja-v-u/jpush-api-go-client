@@ -9,54 +9,117 @@ jpush-api-go-client
 
 使用  
 ----------------------------------- 
-   下载源码,将jpush放入gopath下， improt "jpush/api/push".
+   go get github.com/ylywyn/jpush-api-go-client
    
    
 推送流程  
 ----------------------------------- 
-### 1.构建要推送的平台： push.Platform
-      var pf push.Platform
-      //pf.Add(push.ANDROID)
-      pf.All
+### 1.构建要推送的平台： jpushclient.Platform
+	//Platform
+	var pf jpushclient.Platform
+	pf.Add(jpushclient.ANDROID)
+	pf.Add(jpushclient.IOS)
+	pf.Add(jpushclient.WINPHONE)
+	//pf.All()
       
-### 2.构建接收听众： push.Audience
-      var ad push.Audience
-      //s := []string{"1", "2", "3"}
-      //ad.SetID(s)
-      ad.All()
+### 2.构建接收听众： jpushclient.Audience
+	//Audience
+	var ad jpushclient.Audience
+	s := []string{"t1", "t2", "t3"}
+	ad.SetTag(s)
+	id := []string{"1", "2", "3"}
+	ad.SetID(id)
+	//ad.All()
       
-### 3.构建通知 push.AndroidNotice，或者消息： push.Message
+### 3.构建通知 jpushclient.Notice，或者消息： jpushclient.Message
       
-      //builder : push.AndroidNotice
-      var notice push.AndroidNotice
-      notice.SetAlert("alert_test")
-      notice.SetTitle("title_test")
+	//Notice
+	var notice jpushclient.Notice
+	notice.SetAlert("alert_test")
+	notice.SetAndroidNotice(&jpushclient.AndroidNotice{Alert: "AndroidNotice"})
+	notice.SetIOSNotice(&jpushclient.IOSNotice{Alert: "IOSNotice"})
+	notice.SetWinPhoneNotice(&jpushclient.WinPhoneNotice{Alert: "WinPhoneNotice"})
       
-      //或者push.Message
-      var msg push.Message
-      msg.Title   = "Hello"
-      msg.Content = "祝大家工作顺利
+    //jpushclient.Message
+    var msg jpushclient.Message
+	msg.Title = "Hello"
+	msg.Content = "你是ylywn"
       
-### 4.构建builder: push.NoticeBuilder 或push.MessageBuilder 或 push.MessageAndNoticeBuilder
-      //NoticeBuilder
-      nb := push.NewNoticeBuilder()
-      nb.SetPlatForm(&pf)
-      nb.SetAudience(&ad)
-      //nb.SetSimpleNotice("简单通知") //这个是简单通知，
-      nb.SetAndroidNotice(&notice)
+### 4.构建jpushclient.PayLoad
+    payload := jpushclient.NewPushPayLoad()
+	payload.SetPlatform(&pf)
+	payload.SetAudience(&ad)
+	payload.SetMessage(&msg)
+	payload.SetNotice(&notice)
       
-      //or MessageBuilder
-      mb := push.NewMessageBuilder()
-      mb.SetPlatForm(&pf)
-      mb.SetAudience(&ad)
-      mb.SetMessage(&msg)
       
 ### 5.构建PushClient，发出推送
-      c := push.NewPushClient(secret, appKey)
-      str, err := c.Send(nb)
-      //str, err := c.Send(mb)
+	c := jpushclient.NewPushClient(secret, appKey)
+	r, err := c.Send(bytes)
+	if err != nil {
+		fmt.Printf("err:%s", err.Error())
+	} else {
+		fmt.Printf("ok:%s", r)
+	}
 
   
-### 6.未完成
-      未完成ios和winphone 通知，以及不支持extras扩展字段。
+### 6.完整demo
+    package main
+
+	import (
+		"fmt"
+		"github.com/ylywyn/jpush-api-go-client"
+	)
+
+	const (
+		appKey = "fc4e7512bfd31c3dba9bad3e"
+		secret = "570d3442dc88d1382fe93b89"
+	)
+
+	func main() {
+
+		//Platform
+		var pf jpushclient.Platform
+		pf.Add(jpushclient.ANDROID)
+		pf.Add(jpushclient.IOS)
+		pf.Add(jpushclient.WINPHONE)
+		//pf.All()
+
+		//Audience
+		var ad jpushclient.Audience
+		s := []string{"1", "2", "3"}
+		ad.SetTag(s)
+		ad.SetAlias(s)
+		ad.SetID(s)
+		//ad.All()
+
+		//Notice
+		var notice jpushclient.Notice
+		notice.SetAlert("alert_test")
+		notice.SetAndroidNotice(&jpushclient.AndroidNotice{Alert: "AndroidNotice"})
+		notice.SetIOSNotice(&jpushclient.IOSNotice{Alert: "IOSNotice"})
+		notice.SetWinPhoneNotice(&jpushclient.WinPhoneNotice{Alert: "WinPhoneNotice"})
+
+		var msg jpushclient.Message
+		msg.Title = "Hello"
+		msg.Content = "你是ylywn"
+
+		payload := jpushclient.NewPushPayLoad()
+		payload.SetPlatform(&pf)
+		payload.SetAudience(&ad)
+		payload.SetMessage(&msg)
+		payload.SetNotice(&notice)
+
+		bytes, _ := payload.ToBytes()
+		fmt.Printf("%s\r\n", string(bytes))
+
+		//push
+		c := jpushclient.NewPushClient(secret, appKey)
+		str, err := c.Send(bytes)
+		if err != nil {
+			fmt.Printf("err:%s", err.Error())
+		} else {
+			fmt.Printf("ok:%s", str)
+		}
+	}
 
